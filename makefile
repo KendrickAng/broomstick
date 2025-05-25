@@ -1,6 +1,6 @@
 build-server:
-	go build -C bff main.go
+	go build -C bff ./...
 
 run-server:
-	go build -C bff main.go
-	./bff/main
+	go build -C bff ./...
+	./bff/bff

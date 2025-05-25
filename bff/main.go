@@ -2,66 +2,42 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log"
-	"net"
+	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
 )
 
+const (
+	endpointPopualarFonts = "/fonts/popular"
+)
+
 func main() {
-	c := make(chan os.Signal, 1)
-	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
-
-	ln, err := net.Listen("tcp", ":8080")
-	if err != nil {
-		log.Fatal(err)
+	server := &http.Server{
+		Addr: ":8080",
 	}
-	defer ln.Close()
-
-	ctx := context.Background()
-	ctx, cancel := context.WithCancel(ctx)
+	http.HandleFunc(endpointPopualarFonts, handleGetPopularGoogleFonts)
 	go func() {
-		<-c
-		fmt.Println("Received interrupt signal, shutting down...")
-		cancel()
-		time.Sleep(3 * time.Second) // allow other goroutines to finish
-		os.Exit(0)
+		if err := server.ListenAndServe(); err != nil {
+			log.Fatalf("HTTP server error: %v", err)
+		}
+		log.Println("Stopped serving new connections.")
 	}()
 
-	for {
-		select {
-		case <-ctx.Done():
-			// If shutdown initiated, don't accept new connections
-			continue
-		default:
-			conn, err := ln.Accept()
-			if err != nil {
-				fmt.Println("Error accepting connection:", err)
-				continue
-			}
-			go handleConnection(ctx, conn)
-		}
+	// Shutdown server on interrupt signals
+	signalChan := make(chan os.Signal, 1)
+	signal.Notify(signalChan, os.Interrupt, syscall.SIGTERM)
+	<-signalChan
+
+	// Gracefully shutdown server on interrupt
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	if err := server.Shutdown(ctx); err != nil {
+		log.Fatalf("Server shutdown failed: %v", err)
 	}
-}
+	log.Println("Server gracefully stopped.")
 
-func handleConnection(_ context.Context, conn net.Conn) {
-	defer conn.Close()
-
-	// Do some authentication here...
-
-	buf := make([]byte, 4096)
-	n, err := conn.Read(buf)
-	if err != nil {
-		fmt.Println("Error reading from connection:", err)
-		return
-	}
-
-	fmt.Println("Received data:", string(buf[:n]))
-
-	conn.Write([]byte("Hello from BFF!"))
-
-	fmt.Println("Handled connection from:", conn.RemoteAddr())
+	os.Exit(0)
 }
