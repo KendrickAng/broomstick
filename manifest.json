@@ -4,8 +4,13 @@
     "version": "1.0.0",
     "manifest_version": 3,
     "action": {
-        "default_popup": "popup.html",
-        "default_icon": "broom.png"
+        "default_icon": {
+            "16": "broom16.png",
+            "32": "broom32.png",
+            "48": "broom48.png"
+        },
+        "default_title": "Click to tidy up!",
+        "default_popup": "popup.html"
     },
     "icons": {
         "16": "broom16.png",
@@ -24,9 +29,6 @@
             ],
             "js": [
                 "content.js"
-            ],
-            "css": [
-                "content.css"
             ],
             "run_at": "document_start"
         }

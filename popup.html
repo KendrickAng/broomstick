@@ -9,26 +9,51 @@
 <body>
     <p>🧹 Time for some browser cleanup! 🧹</p>
     <div>
-        <form id="form">
-            <label for="url">Enter URL:</label>
-            <input type="text" id="url" name="url" placeholder="https://google.com">
-            <button type="submit">Submit</button>
-    </div>
-    <script>
-        document.getElementById('form').addEventListener('submit', function (event) {
-            event.preventDefault();
-            const url = document.getElementById('url').value;
-            if (url) {
-                chrome.runtime.sendMessage({ action: 'openUrl', url: url });
-            }
-        });
+        <form id="font-form">
+            <!-- https://learn.microsoft.com/en-us/globalization/fonts-layout/font-support -->
 
-        chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-            if (request.action === 'openUrl') {
-                window.open(request.url, '_blank');
-            }
-        });
-    </script>
+            <ul>
+                <li>
+                    <!-- Arial -->
+                    <input type="radio" id="arial" name="font-selection">
+                    <label for="arial" class="arial">
+                        Arial
+                    </label>
+                </li>
+
+                <li>
+                    <!-- Comic Sans MS -->
+                    <input type="radio" id="comic-sans-ms" name="font-selection">
+                    <label for="comic-sans-ms" class="comic-sans-ms">
+                        Comic Sans MS
+                    </label>
+                </li>
+
+                <li>
+                    <!-- Courier New, sans-serif -->
+                    <input type="radio" id="courier-new" name="font-selection">
+                    <label for="courier-new" class="courier-new">
+                        Courier New
+                    </label>
+                </li>
+
+                <li>
+                    <!-- Google Font -->
+                     <input type="radio" id="gfont" name="font-selection">
+                     <label for="gfont" class="gfont">
+                        Google Font
+                    </label>
+                </li>
+
+                <li>
+                    <!-- No font selected -->
+                    <input type="radio" id="none" name="font-selection">
+                    <label for="none">None</label>
+                </li>
+            </ul>
+        </form>
+    </div>
+    <script src="popup.js"></script>
 </body>
 
 </html>

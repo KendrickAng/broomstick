@@ -1,3 +1,31 @@
+ul {
+    list-style: none;
+}
+
+li {
+    margin: 0;
+}
+
+input {
+    margin: 0;
+}
+
 body {
-    width: 200px;
+    width: 300px;
+}
+
+ul > li > * {
+    vertical-align: middle;
+}
+
+.courier-new {
+    font-family: 'Courier New', sans-serif;
+}
+
+.arial {
+    font-family: Arial, sans-serif;
+}
+
+.comic-sans-ms {
+    font-family: 'Comic Sans MS', sans-serif;
 }
