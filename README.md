@@ -1,5 +1,7 @@
 # Broomstick
 
+Control what fonts your chrome browser uses!
+
 ![Broomstick GIF](media/broomstick.gif)
 
 ## Developer Guide
