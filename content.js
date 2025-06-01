@@ -10,7 +10,7 @@ function createOrReplaceBroomstickStyle(fontFamily) {
     style.setAttribute("type", "text/css");
     document.head.appendChild(style);
   }
-  style.textContent = `* { font-family: "${fontFamily}" !important; }`;
+  style.textContent = `* { font-family: "${fontFamily}"; }`;
 }
 
 function refreshFont() {
