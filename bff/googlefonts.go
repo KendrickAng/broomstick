@@ -10,7 +10,6 @@ import (
 
 const (
 	queryParamApiKey = "key"
-	apiKey           = "AIzaSyDN08lBXjN5E-fMb8DBZv6Yj0jg5b04M9I"
 
 	queryParamCapability = "capability"
 	capabilityWoff2      = "WOFF2"
@@ -47,6 +46,7 @@ type GoogleFontsSort struct {
 }
 
 func fetchGoogleFonts(ctx context.Context, opts GetGoogleFontsOptions) (*GetGoogleFontsResponse, error) {
+	apiKey := env.GoogleFontsApiKey
 	googleFontsUrl := url.URL{
 		Scheme: "https",
 		Host:   "www.googleapis.com",

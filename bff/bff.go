@@ -10,7 +10,12 @@ import (
 )
 
 type GetTrendingGoogleFontsResponse struct {
-	Fonts []string `json:"fonts"`
+	GoogleFonts []GoogleFont `json:"fonts"`
+}
+
+type GoogleFont struct {
+	Family string `json:"family"`
+	URL    string `json:"url"`
 }
 
 func handleGetPopularGoogleFonts(w http.ResponseWriter, r *http.Request) {
@@ -38,7 +43,7 @@ func handleGetPopularGoogleFonts(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	w.Write(buf.Bytes())
 
-	log.Println("Successfully fetched fonts:", len(resp.Fonts), "fonts found")
+	log.Println("Successfully fetched fonts:", len(resp.GoogleFonts), "fonts found")
 }
 
 func getPopularGoogleFonts(ctx context.Context) (*GetTrendingGoogleFontsResponse, error) {
@@ -51,11 +56,20 @@ func getPopularGoogleFonts(ctx context.Context) (*GetTrendingGoogleFontsResponse
 		return nil, err
 	}
 
-	var trendingFonts []string
+	var popularFontFamilies []GoogleFont
 	for _, item := range resp.Items {
-		trendingFonts = append(trendingFonts, item.Family)
+		popularFontFamilies = append(popularFontFamilies, GoogleFont{
+			Family: item.Family,
+			URL:    buildGoogleFontURL(item.Family),
+		})
 	}
+
 	return &GetTrendingGoogleFontsResponse{
-		Fonts: trendingFonts,
+		GoogleFonts: popularFontFamilies,
 	}, nil
+}
+
+func buildGoogleFontURL(fontFamily string) string {
+	// TODO
+	return "https://fonts.google.com/specimen/" + fontFamily
 }
