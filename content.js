@@ -1,18 +1,32 @@
 "use strict";
 
+const BROOMSTICK_STYLE_TAG_ID = "broomstick-style";
+
+function createOrReplaceBroomstickStyle(fontFamily) {
+  let style = document.getElementById(BROOMSTICK_STYLE_TAG_ID);
+  if (!style) {
+    style = document.createElement("style");
+    style.setAttribute("id", BROOMSTICK_STYLE_TAG_ID);
+    style.setAttribute("type", "text/css");
+    document.head.appendChild(style);
+  }
+  style.textContent = `* { font-family: "${fontFamily}" !important; }`;
+}
+
 function refreshFont() {
   chrome.storage.local.get("font", function (result) {
     if (result.font === "gfont") {
-      // Load Google Fonts
+      // TODO: Load Google Fonts
       const link = document.createElement("link");
       link.href = "https://fonts.googleapis.com/css2?family=Roboto:wght@400&display=swap";
       link.rel = "stylesheet";
       document.head.appendChild(link);
-      document.body.style.fontFamily = "'Roboto', sans-serif";
+
+      createOrReplaceBroomstickStyle("'Roboto', sans-serif");
     } else if (result.font) {
-      document.body.style.fontFamily = result.font;
+      createOrReplaceBroomstickStyle(result.font);
     } else {
-      document.body.style.removeProperty('font-family');
+      document.head.removeChild(document.getElementById(BROOMSTICK_STYLE_TAG_ID));
     }
   });
 }
@@ -32,6 +46,6 @@ chrome.storage.onChanged.addListener(function (changes, namespace) {
   if (namespace === "local") {
     refreshFont();
   } else {
-   console.error(`Invalid namespace: ${namespace}`); 
+    console.error(`Invalid namespace: ${namespace}`);
   }
 });
